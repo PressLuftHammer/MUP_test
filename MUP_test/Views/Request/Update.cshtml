@@ -1,0 +1,84 @@
+﻿<div>
+    @{ 
+        RequestLog LastReq = Model.requests[0];
+        int[] AccessStatuses = StatusUtils.GetAccessStatus(LastReq.Status);
+    }
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $(":submit").click(function () {
+                const status = $(this).attr("data-status");
+                    $("#new_status").val(status);
+            });
+        });
+
+    </script>
+
+    <div>
+        @using (Html.BeginForm("Update", "Request", FormMethod.Post))
+        {
+            @Html.Hidden("dt_log", LastReq.LogTime.Ticks)          
+            <div>
+                <h2>Заявка: №@LastReq.RequestId</h2>
+                <h3>Статус:@StatusUtils.GetStatusName(LastReq.Status)</h3>
+                <h3>Обновлена:@LastReq.LogTime.ToString("dd-MMMM-yyyy , HH:mm:ss")</h3>
+
+            </div>
+
+            @if (AccessStatuses.Length>0)
+            {
+                <div>
+                    @Html.TextArea("Comment", string.Empty, 10, 50, null)
+                </div>
+            }
+
+            <div>
+                @Html.Hidden("new_status")
+                
+                @foreach (int sa in AccessStatuses)
+                {
+                    <input type="submit" value="@StatusUtils.GetStatusName(sa)" data-status="@sa"  />
+                }
+           </div>
+        }
+    </div>
+    <div>
+        <h2>История движения заявки</h2>
+    </div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Дата , Время
+                    </th>
+                    <th>
+                        Статус
+                    </th>
+                    <th>
+                        Коментарий
+                    </th>
+                </tr>                
+            </thead>
+            <tbody>
+                @foreach (RequestLog rl in Model.requests)
+                {
+                    <tr>
+                        <td>
+                            @rl.LogTime.ToString("dd/MM/yyyy , HH:mm:ss")
+                        </td>
+                        <th>
+                            @StatusUtils.GetStatusName(rl.Status)
+                        </th>
+                        <td>
+                            @rl.Comment
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

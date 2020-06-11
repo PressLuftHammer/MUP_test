@@ -1,0 +1,65 @@
+﻿@using MUP_test.Models
+<div>
+    <div>
+        <h1>Список заявок</h1>
+    </div>
+    <div>
+        <div>
+            <h3>Фильтры</h3>
+        </div>
+        <div>
+            <div><h4>Статусы заявки</h4></div>
+            <div>
+                <label><input type="checkbox" id="status_0" value="0" />Открыта</label>
+                <label><input type="checkbox" id="status_1" value="1" />Решена</label>
+                <label><input type="checkbox" id="status_2" value="2" />Возврат</label>
+                <label><input type="checkbox" id="status_3" value="3" />Закрыта</label>
+            </div>
+        </div>
+        <div>
+            <div><h4>Период времени</h4></div>
+            <div>
+                <label>С <input type="datetime-local" id="start-period"/></label>
+                <label>по <input type="datetime-local" id="finish-period" /></label>
+            </div>
+        </div>
+    </div>
+    <div>
+       <table>
+           <thead>
+               <tr>
+                   <th>№ заявки</th>
+                   <th>Статус</th>
+                   <th>Коментарий</th>
+                   <th>Дата , Время</th>
+                   <th>Действие</th>
+               </tr>
+           </thead>
+           <tbody>
+              @foreach(RequestLog rl in Model.requests)
+              {
+                  <tr>
+                     <th>
+                         @rl.RequestId
+                     </th>
+                     <th>
+                         @StatusUtils.GetStatusName(rl.Status)
+                     </th>
+                     <td>
+                         @rl.Comment
+                     </td>
+                      <td>
+                         @rl.LogTime.ToString("dd.MM.yyyy , HH:mm:ss") 
+                      </td>
+                      <td>
+                          @Html.ActionLink("Изменить","Update","Request",new { id=rl.RequestId })
+                      </td>
+                  </tr>
+              }
+           </tbody>
+       </table>
+    </div>
+    <div>
+       @Html.ActionLink("Открыть заявку", "Create", "Request")
+    </div>
+</div>

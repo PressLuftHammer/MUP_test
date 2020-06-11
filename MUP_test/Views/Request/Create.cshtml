@@ -1,0 +1,18 @@
+﻿<div>
+    <h2>Новая заявка</h2> 
+</div>
+<div>
+    @using (Html.BeginForm("Create", "Request", FormMethod.Post))
+    {
+        <div>
+            <div>                
+                @Html.TextArea("Comment",string.Empty,10,50,null)
+            </div>
+            <div>
+                <input type="submit" value="Открыть" />
+            </div>
+        </div>
+    }
+</div>
+
+
