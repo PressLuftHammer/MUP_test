@@ -32,25 +32,53 @@ namespace MUP_test.Controllers
         }
 
 
-        [HttpGet]
-        public JsonResult RequestList(string filter,string sort)
+        [HttpPost]
+        public JsonResult RequestList(int[] statuses)
         {
-
+           
             using(MUPContext db=new MUPContext())
             {
 
-               // db.RequestLogs
-               //   .Where(a => a.Status == 0 && a.LogTime > DateTime.Now.AddDays(-30.0)); заявка создана ранее месяца
+                // db.RequestLogs
+                //   .Where(a => a.Status == 0 && a.LogTime > DateTime.Now.AddDays(-30.0)); заявка создана ранее месяца
 
-                return Json(new ReqView
-                {
-                  requests = db.RequestLogs
-                  .Where(r => r.LogTime == db.RequestLogs
-                                         .Where(a => a.RequestId == r.RequestId)
-                                         .Max(b => b.LogTime))
-                  //.OrderBy(sort)                          
-                  .ToArray()
-                });
+
+                //var request1=db.RequestLogs
+                //               .Where(a=>a.Status==0)
+                //               .Join(db.RequestLogs,
+                //                     b1=>b1.RequestId,
+                //                     b2=>b2.RequestId,
+                //                     (c, c1) => new
+                //                     {
+                //                         ReqID=c.RequestId,
+                //                         ReqText=c.Comment,
+                //                         ReqCreateTime=c.LogTime,
+                //                         CurStatus=db.RequestLogs
+
+                //                     }
+
+                //System.Threading.Thread.Sleep(10000);
+
+                return Json(new{
+
+                    requests = db.RequestLogs
+                               .Where(r => r.Status == 0)
+                               .Select(a => new
+                               {
+                                   reqID = a.RequestId,
+                                   reqText = a.Comment,
+                                   reqCreateTime = a.LogTime,
+                                   curStatus = db.RequestLogs
+                                                 .Where(b => b.RequestId == a.RequestId && 
+                                                             b.LogTime == db.RequestLogs
+                                                                      .Where(c => c.RequestId == b.RequestId)
+                                                                      .Max(d => d.LogTime))
+                                                                      .Single().Status
+
+                               })
+                               .Where(l=>statuses.Any(a=>a==l.curStatus))                              
+                               .ToArray()
+                        });
 
             }
 

@@ -19,8 +19,8 @@
         <div>
             <div><h4>Период времени</h4></div>
             <div>
-                <label>С <input type="datetime-local" id="start-period"/></label>
-                <label>по <input type="datetime-local" id="finish-period" /></label>
+                <label>С <input type="date" id="start-period"/></label>
+                <label>по <input type="date" id="finish-period" /></label>
             </div>
         </div>
     </div>
@@ -62,4 +62,74 @@
     <div>
        @Html.ActionLink("Открыть заявку", "Create", "Request")
     </div>
+    <div>
+        <button id="btn_filter">Обновить</button>
+    </div>
+    <div >
+        <table>
+            <thead>
+                <tr>
+                    <th>№ Заявки</th>
+                    <th>Текст заявка</th>
+                    <th>Дата открытия</th>
+                    <th>Текущее состояние</th>
+                </tr>
+            </thead>
+            <tbody id="filter_test"></tbody>
+        </table>
+
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btn_filter").click(function () {
+                const $filter_body = $("#filter_test");
+                const $btn = $(this);
+
+                $filter_body.empty();
+                $btn.prop("disabled", true);
+
+                let filt = [];
+
+
+                if ($("#status_0").prop("checked"))
+                    filt.push(0);
+
+                if ($("#status_1").prop("checked"))
+                    filt.push(1);
+
+                if ($("#status_2").prop("checked"))
+                    filt.push(2);
+
+                if ($("#status_3").prop("checked"))
+                    filt.push(3);
+
+
+                $.ajax({
+                    type:"POST",
+                    url: "@Url.Action("RequestList")",
+                    data: {
+                        statuses:filt
+                    },
+                    dataType:"json",
+                    cache: false,
+                    traditional: true,
+                    success: function (data) {
+                        data.requests.forEach(r => {
+                            const dt = new Date(r.reqCreateTime);
+
+                            $filter_body.append("<tr><td>" + r.reqID + "</td><td>" + r.reqText + "</td><td>" + dt.toLocaleDateString("ru") + "</td><td>" +
+                                r.curStatus + "</td></tr > ")
+                        });
+                    },
+                    complete: function () {
+                        $btn.prop("disabled", false); 
+                    }
+                })
+
+
+
+            });
+        });
+    </script>
 </div>
