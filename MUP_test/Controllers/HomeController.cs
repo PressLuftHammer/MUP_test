@@ -12,16 +12,19 @@ namespace MUP_test.Controllers
     {
         public IActionResult Index()
         {
-            using (MUPContext db = new MUPContext())
-            {
-                return View(new ReqView{
-                   requests= db.RequestLogs
-                  .Where(r => r.LogTime == db.RequestLogs
-                                         .Where(a => a.RequestId == r.RequestId)
-                                         .Max(b => b.LogTime))
-                  .ToArray()
-            });
-            }
+
+            //using (MUPContext db = new MUPContext())
+            //{
+            //    return View(new ReqView{
+            //       requests= db.RequestLogs
+            //      .Where(r => r.LogTime == db.RequestLogs
+            //                             .Where(a => a.RequestId == r.RequestId)
+            //                             .Max(b => b.LogTime))
+            //      .ToArray()
+            //});
+            //}
+
+            return View();
         }
        
 
@@ -33,31 +36,12 @@ namespace MUP_test.Controllers
 
 
         [HttpPost]
-        public JsonResult RequestList(int[] statuses)
+        public JsonResult RequestList(int[] statuses,DateTime start,DateTime finish)
         {
            
             using(MUPContext db=new MUPContext())
             {
-
-                // db.RequestLogs
-                //   .Where(a => a.Status == 0 && a.LogTime > DateTime.Now.AddDays(-30.0)); заявка создана ранее месяца
-
-
-                //var request1=db.RequestLogs
-                //               .Where(a=>a.Status==0)
-                //               .Join(db.RequestLogs,
-                //                     b1=>b1.RequestId,
-                //                     b2=>b2.RequestId,
-                //                     (c, c1) => new
-                //                     {
-                //                         ReqID=c.RequestId,
-                //                         ReqText=c.Comment,
-                //                         ReqCreateTime=c.LogTime,
-                //                         CurStatus=db.RequestLogs
-
-                //                     }
-
-                //System.Threading.Thread.Sleep(10000);
+                finish=finish.AddDays(1.0);
 
                 return Json(new{
 
@@ -76,7 +60,7 @@ namespace MUP_test.Controllers
                                                                       .Single().Status
 
                                })
-                               .Where(l=>statuses.Any(a=>a==l.curStatus))                              
+                               .Where(l=>l.reqCreateTime>=start && l.reqCreateTime<finish &&   statuses.Any(a=>a==l.curStatus))                              
                                .ToArray()
                         });
 

@@ -37,5 +37,13 @@ namespace MUP_test.Models
         {
             return GetAccessStatus(cur_status).Contains<int>(new_status);
         }
+
+
+        public static string getJSArray()
+        {
+            return string.Join(',', StatusNames.Select(a => string.Format("'{0}'", a))
+                                              .ToArray());
+                       
+        }
     }
 }

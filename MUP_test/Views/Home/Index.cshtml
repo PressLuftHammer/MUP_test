@@ -10,62 +10,31 @@
         <div>
             <div><h4>Статусы заявки</h4></div>
             <div>
-                <label><input type="checkbox" id="status_0" value="0" />Открыта</label>
-                <label><input type="checkbox" id="status_1" value="1" />Решена</label>
-                <label><input type="checkbox" id="status_2" value="2" />Возврат</label>
-                <label><input type="checkbox" id="status_3" value="3" />Закрыта</label>
+                <label><input type="checkbox" id="status_0" value="0" checked />Открыта</label>
+                <label><input type="checkbox" id="status_1" value="1" checked />Решена</label>
+                <label><input type="checkbox" id="status_2" value="2" checked />Возврат</label>
+                <label><input type="checkbox" id="status_3" value="3" checked />Закрыта</label>
             </div>
         </div>
         <div>
             <div><h4>Период времени</h4></div>
             <div>
-                <label>С <input type="date" id="start-period"/></label>
-                <label>по <input type="date" id="finish-period" /></label>
+                @{
+                    DateTime finish = DateTime.Now;
+                    DateTime start = finish.AddDays(-30.0);
+                }
+                <label>С <input type="date" id="start-period" value="@start.ToString("yyyy-MM-dd")" /></label>
+                <label>по <input type="date" id="finish-period" value="@finish.ToString("yyyy-MM-dd")" /></label>
             </div>
         </div>
     </div>
     <div>
-       <table>
-           <thead>
-               <tr>
-                   <th>№ заявки</th>
-                   <th>Статус</th>
-                   <th>Коментарий</th>
-                   <th>Дата , Время</th>
-                   <th>Действие</th>
-               </tr>
-           </thead>
-           <tbody>
-              @foreach(RequestLog rl in Model.requests)
-              {
-                  <tr>
-                     <th>
-                         @rl.RequestId
-                     </th>
-                     <th>
-                         @StatusUtils.GetStatusName(rl.Status)
-                     </th>
-                     <td>
-                         @rl.Comment
-                     </td>
-                      <td>
-                         @rl.LogTime.ToString("dd.MM.yyyy , HH:mm:ss") 
-                      </td>
-                      <td>
-                          @Html.ActionLink("Изменить","Update","Request",new { id=rl.RequestId })
-                      </td>
-                  </tr>
-              }
-           </tbody>
-       </table>
-    </div>
-    <div>
-       @Html.ActionLink("Открыть заявку", "Create", "Request")
-    </div>
-    <div>
         <button id="btn_filter">Обновить</button>
     </div>
-    <div >
+    <div>
+        @Html.ActionLink("Открыть заявку", "Create", "Request")
+    </div>
+    <div>
         <table>
             <thead>
                 <tr>
@@ -73,6 +42,7 @@
                     <th>Текст заявка</th>
                     <th>Дата открытия</th>
                     <th>Текущее состояние</th>
+                    <th>Движение</th>
                 </tr>
             </thead>
             <tbody id="filter_test"></tbody>
@@ -81,55 +51,68 @@
     </div>
 
     <script type="text/javascript">
+
+        function getStatusName(status) {
+            const sts = [@Html.Raw(StatusUtils.getJSArray()) ];
+
+                return sts[status];
+        }
+
+        function getActionRequest(id) {
+            return   `<a href="@Url.Action("Update","Request")\\${id}">Движение</a>`;
+        }
+
         $(document).ready(function () {
             $("#btn_filter").click(function () {
-                const $filter_body = $("#filter_test");
-                const $btn = $(this);
+                    const $filter_body = $("#filter_test");
+                    const $btn = $(this);
 
                 $filter_body.empty();
                 $btn.prop("disabled", true);
 
-                let filt = [];
+                    let filt = [];
 
-
-                if ($("#status_0").prop("checked"))
+                    if ($("#status_0").prop("checked"))
                     filt.push(0);
 
-                if ($("#status_1").prop("checked"))
+                    if ($("#status_1").prop("checked"))
                     filt.push(1);
 
-                if ($("#status_2").prop("checked"))
+                    if ($("#status_2").prop("checked"))
                     filt.push(2);
 
-                if ($("#status_3").prop("checked"))
+                    if ($("#status_3").prop("checked"))
                     filt.push(3);
 
 
                 $.ajax({
-                    type:"POST",
+                    type: "POST",
                     url: "@Url.Action("RequestList")",
                     data: {
-                        statuses:filt
+                        statuses: filt,
+                        start: $("#start-period").val(),
+                        finish: $("#finish-period").val()
                     },
-                    dataType:"json",
+                    dataType: "json",
                     cache: false,
                     traditional: true,
                     success: function (data) {
                         data.requests.forEach(r => {
                             const dt = new Date(r.reqCreateTime);
 
-                            $filter_body.append("<tr><td>" + r.reqID + "</td><td>" + r.reqText + "</td><td>" + dt.toLocaleDateString("ru") + "</td><td>" +
-                                r.curStatus + "</td></tr > ")
+                            $filter_body.append(`<tr><td>${new Intl.NumberFormat('ru-RU', { minimumIntegerDigits: 6 }).format(r.reqID)}</td >
+                                                    <td>${r.reqText}</td> <td>${dt.toLocaleDateString("ru")}</td>
+                                                    <td>${getStatusName(r.curStatus)}</td >
+                                                    <td>${getActionRequest(r.reqID)}</td></tr >`)
                         });
                     },
                     complete: function () {
-                        $btn.prop("disabled", false); 
+                        $btn.prop("disabled", false);
                     }
-                })
+                });
 
-
-
-            });
+            })
+            .click();
         });
     </script>
 </div>
