@@ -35,3 +35,8 @@ body {
         display: none;
     }
 }
+
+
+.list-none{
+    list-style-type:none;
+}

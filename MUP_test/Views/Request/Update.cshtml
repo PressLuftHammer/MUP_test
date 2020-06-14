@@ -1,11 +1,12 @@
 ﻿<div>
     @{ 
         RequestLog LastReq = Model.requests[0];
+        RequestLog FirstReq = Model.requests[Model.requests.Length-1];
         int[] AccessStatuses = StatusUtils.GetAccessStatus(LastReq.Status);
+
     }
 
     <script type="text/javascript">
-
         $(document).ready(function () {
 
             $(":submit").click(function () {
@@ -13,24 +14,32 @@
                     $("#new_status").val(status);
             });
         });
-
     </script>
 
+    <div>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">@Html.ActionLink("Список заявок","Index","Home")</li>
+            <li class="breadcrumb-item">Заявка № @LastReq.RequestId</li>
+        </ol>
+    </div>
     <div>
         @using (Html.BeginForm("Update", "Request", FormMethod.Post))
         {
             @Html.Hidden("dt_log", LastReq.LogTime.Ticks)          
             <div>
-                <h2>Заявка: №@LastReq.RequestId</h2>
-                <h3>Статус:@StatusUtils.GetStatusName(LastReq.Status)</h3>
-                <h3>Обновлена:@LastReq.LogTime.ToString("dd-MMMM-yyyy , HH:mm:ss")</h3>
-
+                <h5>Статус:@StatusUtils.GetStatusName(LastReq.Status)</h5>
+                <h5>Обновлена:@LastReq.LogTime.ToString("dd-MMMM-yyyy , HH:mm:ss")</h5>
+                <div class="alert alert-info">
+                    @FirstReq.Comment
+                </div>
             </div>
+
 
             @if (AccessStatuses.Length>0)
             {
+                <div>Комментарий</div>
                 <div>
-                    @Html.TextArea("Comment", string.Empty, 10, 50, null)
+                    @Html.TextArea("Comment", string.Empty, 3, 50, null)
                 </div>
             }
 
@@ -45,21 +54,15 @@
         }
     </div>
     <div>
-        <h2>История движения заявки</h2>
+        <h5>История движения заявки</h5>
     </div>
     <div>
-        <table>
+        <table class="table table-sm table-bordered"  style="width:60%">
             <thead>
                 <tr>
-                    <th>
-                        Дата , Время
-                    </th>
-                    <th>
-                        Статус
-                    </th>
-                    <th>
-                        Коментарий
-                    </th>
+                    <th scope="col">Дата , Время</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Коментарий</th>
                 </tr>                
             </thead>
             <tbody>

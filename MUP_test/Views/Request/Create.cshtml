@@ -1,18 +1,26 @@
 ﻿<div>
-    <h2>Новая заявка</h2> 
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">@Html.ActionLink("Список заявок", "Index", "Home")</li>
+        <li class="breadcrumb-item">Новая заявка</li>
+    </ol>
 </div>
-<div>
-    @using (Html.BeginForm("Create", "Request", FormMethod.Post))
-    {
-        <div>
-            <div>                
-                @Html.TextArea("Comment",string.Empty,10,50,null)
-            </div>
-            <div>
-                <input type="submit" value="Открыть" />
-            </div>
+
+@using (Html.BeginForm("Create", "Request", FormMethod.Post))
+{
+
+    <div class="row">
+        <div class="col-md">
+            <div>Текст заявки</div>
+            @Html.TextArea("Comment", string.Empty, 5, 50, null)
         </div>
-    }
-</div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            <input type="submit" value="Открыть" class="btn btn-primary" />
+        </div>
+    </div>
+
+}
+
 
 
