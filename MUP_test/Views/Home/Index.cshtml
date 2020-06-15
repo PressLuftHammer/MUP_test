@@ -44,7 +44,7 @@
             @Html.ActionLink("Открыть заявку", "Create", "Request",null,new { @class="btn btn-primary" })
         </div>
         <div>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered" id="request_list">
                 <thead class="thread-dark">
                     <tr>
                         <th scope="col">№ Заявки</th>
@@ -72,27 +72,55 @@
             return `<a href="@Url.Action("Update","Request")\\${id}">${new Intl.NumberFormat('ru-RU', { minimumIntegerDigits: 6 }).format(id)}</a>`;
         }
 
+
+        const sorting = [[2, 0]];
+
         $(document).ready(function () {
+
+            //настройка сортировки по статусу
+            $.tablesorter.addParser({
+                id: "status",
+                is: function () {
+                    return false;
+                },
+                format: function (str) {
+                    const sts = [@Html.Raw(StatusUtils.getJSArray()) ];
+
+                    return sts.indexOf(str);
+                },
+                type:"numeric"
+            });
+            
+
+            $("#request_list").tablesorter({ 
+                headers: {
+                    0: { sorter: false },
+                    1: { sorter: false },
+                    3: {sorter:"status"}
+                },
+                sortList:sorting
+            }); 
+
             $("#btn_filter").click(function () {
-                    const $filter_body = $("#filter_test");
-                    const $btn = $(this);
+                const $filter_body = $("#filter_test");
+                const $btn = $(this);
 
                 $filter_body.empty();
                 $btn.prop("disabled", true);
 
-                    const filt = [];
+                const filt = [];
 
-                    if ($("#status_0").prop("checked"))
-                        filt.push(0);
+                if ($("#status_0").prop("checked"))
+                    filt.push(0);
 
-                    if ($("#status_1").prop("checked"))
-                        filt.push(1);
+                if ($("#status_1").prop("checked"))
+                    filt.push(1);
 
-                    if ($("#status_2").prop("checked"))
-                        filt.push(2);
+                if ($("#status_2").prop("checked"))
+                    filt.push(2);
 
-                    if ($("#status_3").prop("checked"))
-                        filt.push(3);
+                if ($("#status_3").prop("checked"))
+                    filt.push(3);
 
 
                 $.ajax({
@@ -114,14 +142,21 @@
                                                     <td>${r.reqText}</td><td>${dt.toLocaleDateString("ru")}</td>
                                                     <td>${getStatusName(r.curStatus)}</td></tr>`)
                         });
+
+                        $("#request_list").trigger("update");
+
+                        $("#request_list").trigger("sorton", sorting); 
+
                     },
                     complete: function () {
-                        $btn.prop("disabled", false);
+                        $btn.prop("disabled", false);                       
                     }
                 });
 
             })
             .click();
+
+            
         });
     </script>
 </div>
