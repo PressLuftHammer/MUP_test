@@ -8,11 +8,22 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+                       
 
             $(":submit").click(function () {
                 const status = $(this).attr("data-status");
                     $("#new_status").val(status);
             });
+
+
+            $("#Comment").on("input", function () {
+                let txt = $(this).val()
+                    .trim();
+
+                const empty = (txt == "");
+
+                $(":submit").prop("disabled", empty);
+            });    
         });
     </script>
 
@@ -39,7 +50,7 @@
             {
                 <div>Комментарий</div>
                 <div>
-                    @Html.TextArea("Comment", string.Empty, 3, 50, null)
+                    <textarea id="Comment" name="Comment" cols="50" rows="3"></textarea>
                 </div>
             }
 
@@ -48,7 +59,7 @@
                 
                 @foreach (int sa in AccessStatuses)
                 {
-                    <input type="submit" value="@StatusUtils.GetStatusName(sa)" data-status="@sa"  />
+                    <input type="submit" value="@StatusUtils.GetStatusName(sa)" data-status="@sa"  class="btn btn-primary" disabled/>
                 }
            </div>
         }

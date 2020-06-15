@@ -1,4 +1,20 @@
-﻿<div>
+﻿<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#Comment").on("input",function () {
+            let txt = $(this).val()
+                .trim();   
+            
+            const empty = (txt == "");        
+
+            $(":submit").prop("disabled", empty);
+        });    
+    });
+
+</script>
+
+<div>
     <ol class="breadcrumb">
         <li class="breadcrumb-item">@Html.ActionLink("Список заявок", "Index", "Home")</li>
         <li class="breadcrumb-item">Новая заявка</li>
@@ -11,12 +27,13 @@
     <div class="row">
         <div class="col-md">
             <div>Текст заявки</div>
-            @Html.TextArea("Comment", string.Empty, 5, 50, null)
+            <textarea id="Comment" name="Comment" cols="50" rows="5">
+            </textarea>           
         </div>
     </div>
     <div class="row">
         <div class="col-md">
-            <input type="submit" value="Открыть" class="btn btn-primary" />
+            <input type="submit" value="Открыть" class="btn btn-primary" disabled/>
         </div>
     </div>
 
