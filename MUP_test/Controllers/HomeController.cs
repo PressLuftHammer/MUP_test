@@ -11,20 +11,8 @@ namespace MUP_test.Controllers
     public class HomeController : Controller
     {
         public IActionResult Index()
-        {
-
-            //using (MUPContext db = new MUPContext())
-            //{
-            //    return View(new ReqView{
-            //       requests= db.RequestLogs
-            //      .Where(r => r.LogTime == db.RequestLogs
-            //                             .Where(a => a.RequestId == r.RequestId)
-            //                             .Max(b => b.LogTime))
-            //      .ToArray()
-            //});
-            //}
-
-            return View();
+        {            
+                return View();
         }
        
 

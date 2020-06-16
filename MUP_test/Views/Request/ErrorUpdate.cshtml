@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "Ошибка";
+}
+<div>
+    <h3>Ошибка!!!</h3>
+</div>
+<div class="alert alert-danger">
+    @Model.message
+</div>
+<div>
+    @Html.ActionLink("Попробовать еще раз", "Update", new { id = Model.id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Вернуться к списку заявок", "Index", "Home", null, new { @class = "btn btn-primary"})
+</div>
+
+
+
+
+

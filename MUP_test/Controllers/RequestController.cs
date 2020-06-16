@@ -56,40 +56,50 @@ namespace MUP_test.Controllers
         [HttpPost]
         public IActionResult Update(int id,long dt_log,int new_status,string Comment)
         {
-            using(MUPContext db=new MUPContext())
+            try
             {
-               
-                using (var transact=db.Database.BeginTransaction(IsolationLevel.RepeatableRead))
+
+                using (MUPContext db = new MUPContext())
                 {
-                    //получаем последнюю запись из лога
-                    var rl = db.RequestLogs
-                             .Where(r => r.RequestId == id)
-                             .OrderByDescending(a => a.LogTime)
-                             .First();
-                    
-                    ////проверяем последняя ли запись                    
-                    if(rl.LogTime.Ticks!=dt_log)
-                        throw new Exception("Данные устарели необходимо обновить!");
 
-                    if (!StatusUtils.CheckNextStatus(rl.Status, new_status))
-                        throw new Exception(string.Format("Недопустимое изменение статуса заявки '{0}'->'{1}'",
-                            StatusUtils.GetStatusName(rl.Status),StatusUtils.GetStatusName(new_status)));
-
-                    //добавление записи
-                    db.RequestLogs.Add(new RequestLog
+                    using (var transact = db.Database.BeginTransaction(IsolationLevel.RepeatableRead))
                     {
-                        RequestId = id,
-                        Status = new_status,
-                        Comment = Comment,
-                        LogTime = DateTime.Now
-                    });
+                        //получаем последнюю запись из лога
+                        var rl = db.RequestLogs
+                                 .Where(r => r.RequestId == id)
+                                 .OrderByDescending(a => a.LogTime)
+                                 .First();
 
-                    db.SaveChanges();
-                    transact.Commit();
+                        ////проверяем последняя ли запись                    
+                      //  if (rl.LogTime.Ticks != dt_log)
+                            throw new Exception("Данные устарели, необходимо обновить!");
+
+                        if(!StatusUtils.CheckNextStatus(rl.Status, new_status))
+                            throw new Exception(string.Format("Недопустимое изменение статуса заявки '{0}'->'{1}'",
+                                StatusUtils.GetStatusName(rl.Status), StatusUtils.GetStatusName(new_status)));
+
+                        //добавление записи
+                        db.RequestLogs.Add(new RequestLog
+                        {
+                            RequestId = id,
+                            Status = new_status,
+                            Comment = Comment,
+                            LogTime = DateTime.Now
+                        });
+
+                        db.SaveChanges();
+                        transact.Commit();
+                    }
                 }
-            }
 
-            return Redirect((Url.Action("Update", new { id = id })));
+                return Redirect((Url.Action("Update", new { id = id })));
+            }
+            catch(Exception e)
+            {
+                return View("ErrorUpdate",new ErrorUpdate{ message = e.Message, id = id });
+            }
         }
+
+        
     }
 }

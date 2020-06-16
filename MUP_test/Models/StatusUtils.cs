@@ -7,10 +7,10 @@ namespace MUP_test.Models
 {
     public class StatusUtils
     {
-        public static readonly string[] StatusNames = new string[]
+        private static string[] StatusNames = new string[]
         {
             "Открыта","Решена","Возврат","Закрыта"
-        };
+        };        
 
         public static string GetStatusName(int status)
         {
