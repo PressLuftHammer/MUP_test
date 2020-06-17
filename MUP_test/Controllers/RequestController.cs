@@ -71,7 +71,7 @@ namespace MUP_test.Controllers
                                  .First();
 
                         ////проверяем последняя ли запись                    
-                      //  if (rl.LogTime.Ticks != dt_log)
+                        if (rl.LogTime.Ticks != dt_log)
                             throw new Exception("Данные устарели, необходимо обновить!");
 
                         if(!StatusUtils.CheckNextStatus(rl.Status, new_status))
