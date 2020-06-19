@@ -4,7 +4,7 @@
         <li class="breadcrumb-item">Список заявок</li>
     </ol>
 </div>
-<div class="row ">
+<div class="row">
     <div class="col-md-2">
         <div class="text-center">
             <h4 >Фильтры:</h4>
@@ -13,34 +13,34 @@
             <div class="col-md-12"><h5>Статусы заявки:</h5></div>
             <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-2 text-right pr-1">
                         <input type="checkbox" id="status_0" value="0" checked />
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-10  pl-0">
                         Открыта
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-2 text-right pr-1">
                         <input type="checkbox" id="status_1" value="1" checked />
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-10  pl-0">
                         Решена
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-2 text-right pr-1">
                         <input type="checkbox" id="status_2" value="2" checked />
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-10  pl-0">
                         Возврат
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-2 text-right pr-1">
                         <input type="checkbox" id="status_3" value="3" checked />
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-10  pl-0">
                         Закрыта
                     </div>
                 </div>
@@ -55,12 +55,12 @@
                     DateTime finish = DateTime.Now;
                     DateTime start = finish.AddDays(-30.0);
                 }
-               <div class="col-md-2 text-right">С</div>
-               <div class="col-md-10"><input type="date" id="start-period" value="@start.ToString("yyyy-MM-dd")"/></div>
-               <div class="col-md-2 text-right">по</div>
-               <div class="col-md-10"><input type="date" id="finish-period" value="@finish.ToString("yyyy-MM-dd")" /></div>
+               <div class="col-md-2 text-right pr-1 my-1">С</div>
+               <div class="col-md-10 pl-0 my-1"><input type="date"  id="start-period" value="@start.ToString("yyyy-MM-dd")"/></div>
+               <div class="col-md-2 text-right pr-1 my-1">по</div>
+               <div class="col-md-10 pl-0 my-1"><input type="date" id="finish-period" value="@finish.ToString("yyyy-MM-dd")" /></div>
                
-               <div class="col-md-12 text-center py-5">
+               <div class="col-md-12 text-center py-1">
                    <button id="btn_filter" class="btn btn-primary">Обновить</button>
                </div>
         </div>
@@ -68,12 +68,12 @@
     </div>
 
     <div class="col-md-10">
-        <div>
+        <div class="py-1">
             @Html.ActionLink("Открыть заявку", "Create", "Request", null, new { @class = "btn btn-primary" })
         </div>
         <div>
             <table class="table table-striped table-bordered" id="request_list">
-                <thead class="thread-dark">
+                <thead class="thead-dark">
                     <tr>
                         <th scope="col">№ Заявки</th>
                         <th scope="col">Текст заявки</th>
