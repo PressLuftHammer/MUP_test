@@ -98,8 +98,6 @@ namespace MUP_test.Controllers
             {
                 return View("ErrorUpdate",new ErrorUpdate{ message = e.Message, id = id });
             }
-        }
-
-        
+        }        
     }
 }

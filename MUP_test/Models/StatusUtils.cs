@@ -17,20 +17,17 @@ namespace MUP_test.Models
             return StatusNames[status];
         }
 
+        private static Dictionary<int, int[]> Steps = new Dictionary<int, int[]>
+        {
+            {0,new int[]{1} },
+            {1,new int[]{2,3}},
+            {2,new int[]{1}}
+        };
+
+
         public static int[] GetAccessStatus(int status)
         {
-            switch (status)
-            {
-                case 0:
-                    return new int[] { 1 };
-                case 1:
-                    return new int[] { 2, 3 };
-                case 2:
-                    return new int[] { 1 };
-
-                default:
-                    return new int[] { } ;
-            }
+            return Steps.GetValueOrDefault(status, new int[] { });
         }
 
         public static bool CheckNextStatus(int cur_status,int new_status)
